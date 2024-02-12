@@ -90,38 +90,23 @@ def nueva(tk, correo):
     print(tk)
     print(correo)
     if token_db[0][0] == tk:
-        cursor.execute(f"UPDATE instructor SET token = '' WHERE correo_electronico = '{correo}'")
-
-        return render_template('nuevacontraseña.html')
-        
-    
+        cursor.execute(f"UPDATE instructor SET token = ' ' WHERE correo_electronico = '{correo}'")
+        return render_template('nuevacontraseña.html', email=correo)
     else:
         return redirect('/')
 
-@programa.route('/nuevacontrasena/<token>', methods=['GET', 'POST'])
-def verify_email(token):
-    if request.method == 'POST':
-        cursor.execute(f"SELECT token,correo_electronico FROM instructor WHERE token = '{token}'")
-        token_db = cursor.fetchall()
-
-        if token_db:
-            if token_db[0][0] == token:
-                contrasena1 = request.form['contraseña1']
-                contrasena2 = request.form['contraseña2']
-
-                if contrasena1 == contrasena2:
-                    contrasena_nueva = hashlib.sha512(contrasena1.encode("utf-8")).hexdigest()
-
-                    cursor.execute(f"UPDATE instructor SET contrasena = '{contrasena_nueva}' WHERE correo_electronico = '{token_db[0][1]}'")
-                    conexion.commit()
-
-                    return redirect('/')
-                else:
-                    return "Las contraseñas no coinciden."
-            else:
-                return "Token de verificación no válido."
-        else:
-            return "Token de verificación no válido."
+@programa.route('/guardanueva', methods=['POST'])
+def guardanueva():
+    email = request.form['email']
+    contrasena1 = request.form['contraseña1']
+    contrasena2 = request.form['contraseña2']
+    if contrasena1 == contrasena2:
+        contrasena_nueva = hashlib.sha512(contrasena1.encode("utf-8")).hexdigest()
+        cursor.execute(f"UPDATE instructor SET contrasena = '{contrasena_nueva}' WHERE correo_electronico = '{email}'")
+        conexion.commit()
+        return redirect('/')
+    else:
+        return render_template('nuevacontraseña.html', email = email, mensaje = "Contraseñas no coinciden.")
 
 if __name__ == "__main__":
     programa.run(debug=True)

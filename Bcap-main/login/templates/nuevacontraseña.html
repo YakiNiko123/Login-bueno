@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/nuevacontraseña.css">
     <title>recuperacion de contraseña</title>
 </head>
 <body>
     <div class="contenedor">
         <div class="recuadro">
 
-            <form action="/nueva" method="post">
+            <form action="/guardanueva" method="post">
+                <input type="email" name="email" id="email" hidden value="{{email}}">
+
+                <h2>{{mensaje}}</h2>
                 <h2>digite su nueva contraseña</h2>
                 <input type="password" name="contraseña1" id="contraseña1" inputmode="password" required>
                 
